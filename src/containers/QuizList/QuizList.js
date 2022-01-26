@@ -10,13 +10,13 @@ class QuizList extends Component {
   renderQuizes() {
     return this.props.quizes.map(quiz => {
       return (
-        <li
-          key={quiz.id}
-        >
-          <NavLink to={'/quiz/' + quiz.id}>
-            {quiz.name}
-          </NavLink>
-        </li>
+          <li
+              key={quiz.id}
+          >
+            <NavLink to={'/quiz/' + quiz.id}>
+              {quiz.name}
+            </NavLink>
+          </li>
       )
     })
   }
@@ -27,20 +27,20 @@ class QuizList extends Component {
 
   render() {
     return (
-      <div className={classes.QuizList}>
-        <div>
-          <h1>Список тестов</h1>
+        <div className={classes.QuizList}>
+          <div>
+            <h1>Список тестов</h1>
 
-          {
-            this.props.loading && this.props.quizes.length !== 0
-              ? <Loader />
-              : <ul>
-                  { this.renderQuizes() }
-                </ul>
-          }
+            {
+              this.props.loading && this.props.quizes.length !== 0
+                  ? <Loader />
+                  : <ul>
+                    { this.renderQuizes() }
+                  </ul>
+            }
 
+          </div>
         </div>
-      </div>
     )
   }
 }

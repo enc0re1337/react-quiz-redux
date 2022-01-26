@@ -3,11 +3,8 @@ import {
   FETCH_QUIZ_SUCCESS,
   FETCH_QUIZES_ERROR,
   FETCH_QUIZES_START,
-  FETCH_QUIZES_SUCCESS,
-  QUIZ_SET_STATE,
-  FINISH_QUIZ,
-  QUIZ_NEXT_QUESTION,
-  RETRY_QUIZ
+  FETCH_QUIZES_SUCCESS, FINISH_QUIZ, QUIZ_NEXT_QUESTION, QUIZ_RETRY,
+  QUIZ_SET_STATE
 } from './actionTypes'
 
 export function fetchQuizes() {
@@ -35,6 +32,7 @@ export function fetchQuizes() {
 export function fetchQuizById(quizId) {
   return async dispatch => {
     dispatch(fetchQuizesStart())
+
     try {
       const response = await axios.get(`/quizes/${quizId}.json`)
       const quiz = response.data
@@ -46,8 +44,8 @@ export function fetchQuizById(quizId) {
   }
 }
 
-export function fetchQuizSuccess(quiz){
-  return{
+export function fetchQuizSuccess(quiz) {
+  return {
     type: FETCH_QUIZ_SUCCESS,
     quiz
   }
@@ -73,36 +71,34 @@ export function fetchQuizesError(e) {
   }
 }
 
-
 export function quizSetState(answerState, results) {
-  return{
+  return {
     type: QUIZ_SET_STATE,
     answerState, results
   }
-
 }
 
 export function finishQuiz() {
-  return{
+  return {
     type: FINISH_QUIZ
   }
 }
 
 export function quizNextQuestion(number) {
-  return{
+  return {
     type: QUIZ_NEXT_QUESTION,
     number
   }
 }
 
 export function retryQuiz() {
-  return{
-    type: RETRY_QUIZ
+  return {
+    type: QUIZ_RETRY
   }
 }
 
 export function quizAnswerClick(answerId) {
-  return (dispath, getState) => {
+  return (dispatch, getState) => {
     const state = getState().quiz
 
     if (state.answerState) {
@@ -120,23 +116,23 @@ export function quizAnswerClick(answerId) {
         results[question.id] = 'success'
       }
 
-      dispath(quizSetState({[answerId]: 'success'}, results))
+      dispatch(quizSetState({[answerId]: 'success'}, results))
 
       const timeout = window.setTimeout(() => {
         if (isQuizFinished(state)) {
-          dispath(finishQuiz())
+          dispatch(finishQuiz())
         } else {
-          dispath(quizNextQuestion(state.activeQuestion + 1))
+          dispatch(quizNextQuestion(state.activeQuestion + 1))
         }
         window.clearTimeout(timeout)
       }, 1000)
     } else {
       results[question.id] = 'error'
-      dispath(quizSetState({[answerId]: 'error'}, results))
+      dispatch(quizSetState({[answerId]: 'error'}, results))
     }
   }
 }
 
-function isQuizFinished (state) {
+function isQuizFinished(state) {
   return state.activeQuestion + 1 === state.quiz.length
 }
